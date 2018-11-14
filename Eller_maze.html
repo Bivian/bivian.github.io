@@ -1,0 +1,130 @@
+<!-- Created by Bivian-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Page Title</title>
+    <style>
+      *{margin:0;padding:0;}
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script >
+var canvas, ctx;
+const W = Math.floor(window.innerWidth*0.98);
+const H = Math.floor(window.innerHeight*0.98);
+var indent = Math.floor(Math.min(window.innerWidth*0.01,window.innerHeight*0.01));
+var inp=parseInt(prompt("Введите размер поля","8"));
+while(isNaN(inp)){
+  alert("Введено некорректное число, пожалуйста, повторите попытку.");
+  inp=parseInt(prompt("Введите размер поля","8"));
+}
+const fieldSize = inp;
+const coeff=Math.floor((Math.min(W,H))/fieldSize);
+
+window.onload = function() {
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.imageSmoothingEnabled=false;
+  ctx.beginPath();
+  ctx.clearRect(0,0,W,H);
+  var tmp=performance.now();
+  var labyrinth=makeLabyrinth(fieldSize);
+  alert("На обработку затрачено "+(Math.round(Math.round(performance.now()*100)-Math.round(tmp*100))/100)+" миллисекунд.");
+}
+
+function makeLabyrinth(width, height=width){
+  //Начальная инициализация
+  var rw=[];
+  var bw=[];
+  var k=[]
+  for(var i=0;i<height;i++){
+    rw.push([]);
+    bw.push([]);
+    k.push([]);
+    for(var j=0;j<width;j++){
+      rw[i].push(false);
+      bw[i].push(false);
+      k[i].push(i*width+j);
+    }
+  }
+  var cs=function(x,y,row){
+    var ind;
+    if(x!=y){
+      while(~(ind=k[row].indexOf(x))){
+        k[row][ind]=y;
+      }
+    }
+  }
+  for(i=0;i<height;i++){
+    if(i>0){
+      for(j=0;j<width;j++){
+        if(!bw[i-1][j]){
+          k[i][j]=k[i-1][j];
+        }
+      }
+    }
+    for(j=0;j<width-1;j++){
+      if(k[i][j]==k[i][j+1]){
+        rw[i][j]=true;
+        continue;
+      }
+      if(Math.random()<=0.5){
+        cs(k[i][j+1],k[i][j],i);
+      }else{
+        rw[i][j]=true;
+      }
+    }
+    var sets={};
+    for(j=0;j<width;j++){
+      if(!sets[k[i][j]])sets[k[i][j]]=0;
+      sets[k[i][j]]++;
+    }
+    for(j=0;j<width;j++){
+      if(sets[k[i][j]]>1){
+        if(Math.random()<=0.5){
+          sets[k[i][j]]--;
+          bw[i][j]=true;
+        }
+      }
+    }
+    rw[i][width-1]=true;
+    if(i==height-1){
+      for(j=0;j<width;j++){
+        bw[i][j]=true;
+      }
+      for(j=0;j<width-1;j++){
+        if(k[i][j]!=k[i][j+1]){
+          rw[i][j]=false;
+          cs(k[i][j+1],k[i][j],i);
+        }
+      }
+    }
+    rw[i][width-1]=true;
+  }//End for i
+  for(i=0;i<height;i++){
+    for(j=0;j<width;j++){
+      draw(j,i,rw[i][j],bw[i][j], j==0,i==0);
+    }
+  }
+}
+
+function draw(x,y,r=false,b=false,l=false,t=false){
+	ctx.beginPath();
+	ctx.fillStyle="black";
+	if(r)
+	ctx.fillRect(indent+x*coeff+coeff-2,indent+y*coeff,2,coeff);
+	if(b)
+	ctx.fillRect(indent+x*coeff,indent+y*coeff+coeff-2,coeff,2);
+    if(l)
+	ctx.fillRect(indent+x*coeff,indent+y*coeff,2,coeff);
+	if(t)
+	ctx.fillRect(indent+x*coeff,indent+y*coeff,coeff,2);
+}
+    </script>
+  </body>
+</html>
