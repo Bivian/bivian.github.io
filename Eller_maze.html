@@ -22,7 +22,7 @@ while(isNaN(inp)){
   inp=parseInt(prompt("Введите размер поля","8"));
 }
 const fieldSize = inp;
-const coeff=Math.floor((Math.min(W,H))/fieldSize);
+const coeff=Math.floor(Math.max(3,(Math.min(W,H))/fieldSize));
 
 window.onload = function() {
   canvas = document.getElementById("canvas");
@@ -38,7 +38,6 @@ window.onload = function() {
 }
 
 function makeLabyrinth(width, height=width){
-  //Начальная инициализация
   var rw=[];
   var bw=[];
   var k=[]
@@ -53,9 +52,9 @@ function makeLabyrinth(width, height=width){
     }
   }
   var cs=function(x,y,row){
-    var ind;
+    var ind=-1;
     if(x!=y){
-      while(~(ind=k[row].indexOf(x))){
+      while(~(ind=k[row].indexOf(x, ind+1))){
         k[row][ind]=y;
       }
     }
@@ -71,9 +70,8 @@ function makeLabyrinth(width, height=width){
     for(j=0;j<width-1;j++){
       if(k[i][j]==k[i][j+1]){
         rw[i][j]=true;
-        continue;
       }
-      if(Math.random()<=0.5){
+      else if(Math.random()<=0.5){
         cs(k[i][j+1],k[i][j],i);
       }else{
         rw[i][j]=true;
@@ -92,16 +90,14 @@ function makeLabyrinth(width, height=width){
         }
       }
     }
-    rw[i][width-1]=true;
     if(i==height-1){
-      for(j=0;j<width;j++){
-        bw[i][j]=true;
-      }
+      bw[i][0]=true;
       for(j=0;j<width-1;j++){
         if(k[i][j]!=k[i][j+1]){
           rw[i][j]=false;
           cs(k[i][j+1],k[i][j],i);
         }
+        bw[i][j+1]=true;
       }
     }
     rw[i][width-1]=true;
@@ -114,16 +110,17 @@ function makeLabyrinth(width, height=width){
 }
 
 function draw(x,y,r=false,b=false,l=false,t=false){
+	var thickness=Math.floor(Math.max(1, coeff/15));
 	ctx.beginPath();
 	ctx.fillStyle="black";
 	if(r)
-	ctx.fillRect(indent+x*coeff+coeff-2,indent+y*coeff,2,coeff);
+	ctx.fillRect(indent+x*coeff+coeff,indent+y*coeff,thickness,coeff+thickness);
 	if(b)
-	ctx.fillRect(indent+x*coeff,indent+y*coeff+coeff-2,coeff,2);
+	ctx.fillRect(indent+x*coeff,indent+y*coeff+coeff,coeff+thickness,thickness);
     if(l)
-	ctx.fillRect(indent+x*coeff,indent+y*coeff,2,coeff);
+	ctx.fillRect(indent+x*coeff,indent+y*coeff,thickness,coeff);
 	if(t)
-	ctx.fillRect(indent+x*coeff,indent+y*coeff,coeff,2);
+	ctx.fillRect(indent+x*coeff,indent+y*coeff,coeff,thickness);
 }
     </script>
   </body>
