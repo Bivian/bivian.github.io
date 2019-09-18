@@ -1,0 +1,125 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><canvas id="canvas"></canvas><script>
+"use strict";
+try{
+let canvas, ctx, map, debug=false;
+const W = Math.floor(window.innerWidth*0.98);
+const H = Math.floor(window.innerHeight*0.98);
+window.onload = function() {
+  debug=confirm("Would you like to enable debug information?");
+  canvas = document.getElementById("canvas");
+  ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  ctx.imageSmoothingEnabled=false;
+  ctx.beginPath();
+  ctx.clearRect(0,0,W,H);
+  let cellSize=parseInt(prompt("Enter cell size:",5));
+  if(isNaN(cellSize))cellSize=5;
+  let speed=parseInt(prompt("Enter speed (turns per second):",1000));
+  if(isNaN(speed))speed=1000;
+  map=makeMap(cellSize);
+  ctx.font="60px Arial";
+  makeTurn(1,speed,0,Math.floor(Math.floor(W/cellSize)/2),Math.floor(Math.floor(H/cellSize)/2),0,cellSize);
+  //ctx.endPath();
+}
+
+function makeMap(cellSize){
+	let map=[];
+	let row=[];
+	for(let i=0;i<Math.floor(H/cellSize);i++){
+	  let row=[];
+	  for(let j=0;j<Math.floor(W/cellSize);j++){
+	    row.push(false);
+	  }
+	  map.push(row);
+	}
+	return map;
+}
+function makeTurn(timeoutID, speed, prevTimeout, x, y, dir, cellSize, steps=0){
+  try{
+  let tmp=performance.now();
+  let maxx=Math.floor(W/cellSize)-1;
+  let maxy=Math.floor(H/cellSize)-1;
+  //alert("maxx: "+maxx+"\nmaxy: "+maxy+"\nx: "+x+"\ny: "+y);
+  for(let i=0;i<((speed>(1000/speed-prevTimeout))?speed:1);i++){
+    dir=dir+(map[y][x]?-1:1);
+    map[y][x]=!map[y][x];
+    draw(map[y][x]?"black":"white",x*cellSize, y*cellSize, cellSize, cellSize);
+    dir<0?dir=3:0;
+    dir>3?dir=0:0;
+    switch(dir){
+      case 0:y--;break;
+      case 1:x++;break;
+      case 2:y++;break;
+      case 3:x--;break;
+    }
+    x<0?x=maxx:0;
+    x>maxx?x=0:0;
+    y<0?y=maxy:0;
+    y>maxy?y=0:0;
+    draw("red", x*cellSize, y*cellSize, cellSize, cellSize);
+  }
+  if(debug){
+    ctx.fillStyle="red";
+    steps+=((speed>(1000/speed-prevTimeout))?speed:1);
+    drawTextBG(ctx, "Steps:"+steps, 60, 5, 5);
+    drawTextBG(ctx, "Delay:"+Math.round(prevTimeout)+"ms   ", 60, 5, 65);
+  }
+  clearTimeout(timeoutID);
+  tmp=performance.now()-tmp;
+  timeoutID=setTimeout(makeTurn, speed>Math.floor(1000/speed-tmp)?1:Math.floor(1000/speed-tmp), timeoutID, speed, tmp, x, y, dir, cellSize, steps);
+  }catch(e){alert(e);}
+}
+
+function draw(style,mx,my,rx,ry){
+  ctx.fillStyle=style;
+  ctx.fillRect(mx,my,rx,ry);
+}
+
+function recClone(obj){
+  let newObj={};
+  for(let prop in obj){
+    if((typeof obj[prop])=="object")
+      newObj[prop]=recClone(obj[prop]);
+    else
+      newObj[prop]=obj[prop];
+  }
+  return newObj;
+}
+
+function randInt(min, max) {
+  return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min))) + Math.ceil(min); //Максимум не включается, минимум включается
+}
+
+/// expand with color, background etc.
+function drawTextBG(ctx, txt, font, x, y) {
+
+    /// lets save current state as we make a lot of changes        
+    ctx.save();
+
+    /// set font
+    ctx.font = font;
+
+    /// draw text from top - makes life easier at the moment
+    ctx.textBaseline = 'top';
+
+    /// color for background
+    ctx.fillStyle = 'white';
+
+    /// get width of text
+    var width = ctx.measureText(txt).width;
+
+    /// draw background rect assuming height of font
+    ctx.fillRect(x, y, width, parseInt(font, 10));
+
+    /// text color
+    ctx.fillStyle = 'red';
+
+    /// draw text on top
+    ctx.fillText(txt, x, y);
+
+    /// restore original state
+    ctx.restore();
+}
+
+}catch(e){alert(e);}</script></body></html>
