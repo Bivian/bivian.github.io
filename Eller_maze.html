@@ -12,11 +12,12 @@
   <body>
     <canvas id="canvas"></canvas>
     <script >
+"use strict";
 var canvas, ctx;
 const W = Math.floor(window.innerWidth*0.98);
 const H = Math.floor(window.innerHeight*0.98);
-var indent = Math.floor(Math.min(window.innerWidth*0.01,window.innerHeight*0.01));
-var inp=parseInt(prompt("Введите размер поля","8"));
+let indent = Math.floor(Math.min(window.innerWidth*0.01,window.innerHeight*0.01));
+let inp=parseInt(prompt("Введите размер поля","8"));
 while(isNaN(inp)){
   alert("Введено некорректное число, пожалуйста, повторите попытку.");
   inp=parseInt(prompt("Введите размер поля","8"));
@@ -32,16 +33,16 @@ window.onload = function() {
   ctx.imageSmoothingEnabled=false;
   ctx.beginPath();
   ctx.clearRect(0,0,W,H);
-  var tmp=performance.now();
-  var labyrinth=makeLabyrinth(fieldSize);
+  let tmp=performance.now();
+  let labyrinth=makeLabyrinth(fieldSize);
   alert("На обработку затрачено "+(Math.round(Math.round(performance.now()*100)-Math.round(tmp*100))/100)+" миллисекунд.");
 }
 
 function makeLabyrinth(width, height=width){
-  var rw=[];
-  var bw=[];
-  var k=[]
-  for(var i=0;i<height;i++){
+  let rw=[];
+  let bw=[];
+  let k=[]
+  for(let i=0;i<height;i++){
     rw.push([]);
     bw.push([]);
     k.push([]);
@@ -52,7 +53,7 @@ function makeLabyrinth(width, height=width){
     }
   }
   var cs=function(x,y,row){
-    var ind=-1;
+    let ind=-1;
     if(x!=y){
       while(~(ind=k[row].indexOf(x, ind+1))){
         k[row][ind]=y;
@@ -110,7 +111,7 @@ function makeLabyrinth(width, height=width){
 }
 
 function draw(x,y,r=false,b=false,l=false,t=false){
-	var thickness=Math.floor(Math.max(1, coeff/15));
+	let thickness=Math.floor(Math.max(1, coeff/15));
 	ctx.beginPath();
 	ctx.fillStyle="black";
 	if(r)
