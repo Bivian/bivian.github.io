@@ -9,7 +9,10 @@
 		var gb = window.addGB(document.getElementById("gameboys"));
 		gb.GUI.zoom = 4;
 		setZoom(gb);
+		try{
 		gameboyObj = new gb('Harry Potter and The Chamber of Secrets (UE) (M10) [C][!].gbc', canvas);
+		gameboyObj.loadROM('https://bivian.github.io/amebo-master/Harry Potter and The Chamber of Secrets (UE) (M10) [C][!].gbc',false);
+		}catch(e){alert(e);}
 	};
 	</script>
 </head>
