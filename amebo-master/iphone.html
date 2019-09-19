@@ -908,9 +908,9 @@
 
 			// end UI init
 
-			gameboy = new gb(null, document.getElementById('gameboy'), {cButByte: true, rootDir:"/"});
+			gameboy = new gb(null, document.getElementById('gameboy'), {cButByte: true, rootDir:""});
 			try{
-			gameboy.loadROM("Harry Potter and The Chamber of Secrets (UE) (M10) [C][!].gbc", false);
+			loadURL("Harry Potter and The Chamber of Secrets (UE) (M10) [C][!].gbc");
 			}catch(e){alert(e);}
 			backButtonDisp("none");
 			setUpButtons();
@@ -1394,6 +1394,7 @@
 		}
 
 		function loadURL(url) {
+			var url="Harry Potter and The Chamber of Secrets (UE) (M10) [C][!].gbc";
 			gameboy.onload = function() {
 				addROM(gameboy.filename, byteToString(gameboy.game), populateRecentFiles);
 			}
