@@ -5,6 +5,14 @@ let canvas, ctx, map, debug=false;
 const W = Math.floor(window.innerWidth*0.98);
 const H = Math.floor(window.innerHeight*0.98);
 window.onload = function() {
+	function setpixelated(context){
+    context['imageSmoothingEnabled'] = false;       /* standard */
+    context['mozImageSmoothingEnabled'] = false;    /* Firefox */
+    context['oImageSmoothingEnabled'] = false;      /* Opera */
+    context['webkitImageSmoothingEnabled'] = false; /* Safari */
+    context['msImageSmoothingEnabled'] = false;     /* IE */
+  }
+  setpixelated(document.getElementById('canvas').getContext('2d'));
   debug=confirm("Would you like to enable debug information?");
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
