@@ -495,16 +495,6 @@
 	</style>
 
 	<script>
-		function setpixelated(context){
-    context['imageSmoothingEnabled'] = false;       /* standard */
-    context['mozImageSmoothingEnabled'] = false;    /* Firefox */
-    context['oImageSmoothingEnabled'] = false;      /* Opera */
-    context['webkitImageSmoothingEnabled'] = false; /* Safari */
-    context['msImageSmoothingEnabled'] = false;     /* IE */
-}
-setpixelated(document.getElementById('gameboy').getContext('2d'));
-
-
 		var defaultControls = 
 			{
 
@@ -915,7 +905,14 @@ setpixelated(document.getElementById('gameboy').getContext('2d'));
 			UIctx = UIcanvas.getContext("2d");
 
 			// end UI init
-
+			function setpixelated(context){
+    context['imageSmoothingEnabled'] = false;       /* standard */
+    context['mozImageSmoothingEnabled'] = false;    /* Firefox */
+    context['oImageSmoothingEnabled'] = false;      /* Opera */
+    context['webkitImageSmoothingEnabled'] = false; /* Safari */
+    context['msImageSmoothingEnabled'] = false;     /* IE */
+}
+setpixelated(document.getElementById('gameboy').getContext('2d'));
 			gameboy = new gb(null, document.getElementById('gameboy'), {cButByte: true, rootDir:""});
 			try{
 			loadURL("Harry Potter and The Chamber of Secrets (UE) (M10) [C][!].gbc");
