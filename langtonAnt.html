@@ -12,6 +12,10 @@ window.onload = function() {
     context['webkitImageSmoothingEnabled'] = false; /* Safari */
     context['msImageSmoothingEnabled'] = false;     /* IE */
   }
+  function csscanvas(canvas){
+  	canvas.style="image-rendering: optimizeSpeed;image-rendering: -moz-crisp-edges;image-rendering: -webkit-optimize-contrast;image-rendering: -o-crisp-edges;image-rendering: pixelated;-ms-interpolation-mode: nearest-neighbor;";
+  }
+  csscanvas(document.getElementById('canvas'));
   setpixelated(document.getElementById('canvas').getContext('2d'));
   debug=confirm("Would you like to enable debug information?");
   canvas = document.getElementById("canvas");
