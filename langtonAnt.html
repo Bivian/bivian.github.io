@@ -23,7 +23,7 @@ window.onload = function() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled=false;
-  ctx.beginPath();
+  //ctx.beginPath();
   ctx.clearRect(0,0,W,H);
   let cellSize=parseInt(prompt("Enter cell size:",5));
   if(isNaN(cellSize))cellSize=5;
@@ -37,7 +37,6 @@ window.onload = function() {
 
 function makeMap(cellSize){
 	let map=[];
-	let row=[];
 	for(let i=0;i<Math.floor(H/cellSize);i++){
 	  let row=[];
 	  for(let j=0;j<Math.floor(W/cellSize);j++){
