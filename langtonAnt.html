@@ -91,7 +91,7 @@ function draw(style,mx,my,rx,ry){
 
 function redraw(timestamp){
   for(let i=0;i<cart.length;i++){
-    draw(cart[i][2]?"black":"white",cart[i][0],cart[i][1],cellSize,cellSize);
+    draw(cart[i][2]?"black":"white",cart[i][0]*cellSize,cart[i][1]*cellSize,cellSize,cellSize);
   }
   cart=[];
   window.requestAnimationFrame(redraw);
