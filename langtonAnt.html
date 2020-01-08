@@ -2,6 +2,7 @@
 "use strict";
 try{
 let canvas, ctx, map, debug=false;
+let cart=[];
 const W = Math.floor(window.innerWidth*0.98);
 const H = Math.floor(window.innerHeight*0.98);
 window.onload = function() {
@@ -32,6 +33,7 @@ window.onload = function() {
   map=makeMap(cellSize);
   ctx.font="60px Arial";
   makeTurn(1,speed,0,Math.floor(Math.floor(W/cellSize)/2),Math.floor(Math.floor(H/cellSize)/2),0,cellSize);
+  window.requestAnimationFrame(redraw);
   //ctx.endPath();
 }
 
@@ -55,7 +57,7 @@ function makeTurn(timeoutID, speed, prevTimeout, x, y, dir, cellSize, steps=0){
   for(let i=0;i<((speed>(1000/speed-prevTimeout))?speed:1);i++){
     dir=dir+(map[y][x]?-1:1);
     map[y][x]=!map[y][x];
-    draw(map[y][x]?"black":"white",x*cellSize, y*cellSize, cellSize, cellSize);
+    cart.push([x,y,map[y][x]]);
     dir<0?dir=3:0;
     dir>3?dir=0:0;
     switch(dir){
@@ -68,7 +70,7 @@ function makeTurn(timeoutID, speed, prevTimeout, x, y, dir, cellSize, steps=0){
     x>maxx?x=0:0;
     y<0?y=maxy:0;
     y>maxy?y=0:0;
-    draw("red", x*cellSize, y*cellSize, cellSize, cellSize);
+    //draw("red", x*cellSize, y*cellSize, cellSize, cellSize);
   }
   if(debug){
     ctx.fillStyle="red";
@@ -85,6 +87,14 @@ function makeTurn(timeoutID, speed, prevTimeout, x, y, dir, cellSize, steps=0){
 function draw(style,mx,my,rx,ry){
   ctx.fillStyle=style;
   ctx.fillRect(mx,my,rx,ry);
+}
+
+function redraw(timestamp){
+  for(let i=0;i<cart.length;i++){
+    draw(cart[i][2]?"black":"white",cart[i][0],cart[i][1],cellSize,cellSize);
+  }
+  cart=[];
+  window.requestAnimationFrame(redraw);
 }
 
 function recClone(obj){
