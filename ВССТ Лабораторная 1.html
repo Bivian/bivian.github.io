@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<div>Вероятность прихода заявки (R): <input id="R" type="number" min="0" max="100" value="50" size="3" required/></div>
+<div>Длительность решения задачи (L): <input id="L" type="number" min="1" max="10000" value="5" size="5" required/></div>
+<div>Величина короткой заявки (LK): <input id="LK" type="number" min="1" max="10000" value="3" size="5" required/></div>
+<div>Количество заявок (KOL): <input id="KOL" type="number" min="1" max="10000" value="100" size="5" required/></div>
+<div>Максимальная длина заявки(ML): <input id="ML" type="number" min="0" max="10000" value="20" size="5" required/></div>
+<div>Алгоритм: <input id="SPT" type="button" value="SPT"/><input id="RR" type="button" value="RR"/></div>
+<pre><div id="out"/></pre>
+<script>
+"use strict";
+try{
+//Подготовка
+let out=document.getElementById("out");
+//Задаём функцию исправления ввода для полей
+document.getElementById("R").addEventListener("change",getNumCheckFunc(0,100,0));
+document.getElementById("L").addEventListener("change",getNumCheckFunc(1,10000,1));
+document.getElementById("LK").addEventListener("change",getNumCheckFunc(1,10000,1));
+document.getElementById("KOL").addEventListener("change",getNumCheckFunc(1,10000,1));
+document.getElementById("ML").addEventListener("change",getNumCheckFunc(1,10000,1));
+
+out.print=function(txt, sep="\n"){
+    out.innerHTML+=txt+sep;
+}
+out.clear=function(){
+    out.innerHTML="";
+}
+function randInt(min, max) {
+    return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min))) + Math.ceil(min); //Максимум не включается, минимум включается
+}
+function getNumCheckFunc(min, max, std=0){
+    return function(){
+        this.value=parseInt(this.value);
+        if(!isFinite(this.value)||this.value==""){
+            this.value=std;
+        }
+        else if(parseInt(this.value)>max){
+            this.value=max;
+        }
+        else if(parseInt(this.value)<min){
+            this.value=min;
+        }
+        else{
+            this.value=parseInt(this.value);
+        }
+    }
+}
+document.getElementById("SPT").addEventListener("click",function(){
+//Алгоритм SPT
+out.clear();
+let arr=[];
+let R=parseInt(document.getElementById("R").value);
+let L=parseInt(document.getElementById("L").value);
+let LK=parseInt(document.getElementById("LK").value);
+let KOL=parseInt(document.getElementById("KOL").value);
+let ML=parseInt(document.getElementById("ML").value);
+let emptyNum=0;
+let shortNum=0;
+let tacts=0;
+for(let i=0;i<KOL;i++){
+    if(Math.random()<(R/100)){
+        arr.push(randInt(1,ML+1));
+    }else{
+        arr.push(0);
+    }
+}
+out.print("Список заявок: "+arr);
+arr.sort((a,b)=>a-b);
+out.print("Отсортированные заявки: "+arr);
+for(let i=0;i<arr.length;i++){
+    if(arr[i]==0){
+        emptyNum++;
+        continue;
+    }
+    if(arr[i]<=LK){
+        shortNum++;
+        tacts++;
+        continue;
+    }
+    if(arr[i]>LK){
+        let t=Math.ceil(arr[i]/LK);
+        tacts+=t;
+    }
+}
+let shortTime=shortNum*(shortNum-1)*0.5;
+let shortWaitingTime=shortNum/shortTime;
+if(shortNum>0)
+out.print("Количество коротких заявок: "+shortNum);
+if(emptyNum>0)
+out.print("Количество пустых заявок: "+emptyNum);
+out.print("Количество выполненных тактов: "+tacts);
+if(shortNum>1){
+out.print("Количество затраченного времени на короткие заявки: "+shortTime);
+out.print("Среднее время ожидания 1 короткой заявки: "+shortWaitingTime);
+}
+//Конец SPT
+});
+document.getElementById("RR").addEventListener("click",function(){
+//Алгоритм RR
+out.clear();
+out.print("Ещё не реализовано🙁");
+//Конец RR
+});
+}catch(e){alert(e);}
+</script>
+</body>
+</html>
