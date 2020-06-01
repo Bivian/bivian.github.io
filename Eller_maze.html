@@ -46,7 +46,7 @@ function makeLabyrinth(width, height=width){
     rw.push([]);
     bw.push([]);
     k.push([]);
-    for(var j=0;j<width;j++){
+    for(let j=0;j<width;j++){
       rw[i].push(false);
       bw[i].push(false);
       k[i].push(i*width+j);
@@ -60,15 +60,15 @@ function makeLabyrinth(width, height=width){
       }
     }
   }
-  for(i=0;i<height;i++){
+  for(let i=0;i<height;i++){
     if(i>0){
-      for(j=0;j<width;j++){
+      for(let j=0;j<width;j++){
         if(!bw[i-1][j]){
           k[i][j]=k[i-1][j];
         }
       }
     }
-    for(j=0;j<width-1;j++){
+    for(let j=0;j<width-1;j++){
       if(k[i][j]==k[i][j+1]){
         rw[i][j]=true;
       }
@@ -79,11 +79,11 @@ function makeLabyrinth(width, height=width){
       }
     }
     var sets={};
-    for(j=0;j<width;j++){
+    for(let j=0;j<width;j++){
       if(!sets[k[i][j]])sets[k[i][j]]=0;
       sets[k[i][j]]++;
     }
-    for(j=0;j<width;j++){
+    for(let j=0;j<width;j++){
       if(sets[k[i][j]]>1){
         if(Math.random()<=0.5){
           sets[k[i][j]]--;
@@ -93,7 +93,7 @@ function makeLabyrinth(width, height=width){
     }
     if(i==height-1){
       bw[i][0]=true;
-      for(j=0;j<width-1;j++){
+      for(let j=0;j<width-1;j++){
         if(k[i][j]!=k[i][j+1]){
           rw[i][j]=false;
           cs(k[i][j+1],k[i][j],i);
@@ -103,8 +103,8 @@ function makeLabyrinth(width, height=width){
     }
     rw[i][width-1]=true;
   }//End for i
-  for(i=0;i<height;i++){
-    for(j=0;j<width;j++){
+  for(let i=0;i<height;i++){
+    for(let j=0;j<width;j++){
       draw(j,i,rw[i][j],bw[i][j], j==0,i==0);
     }
   }
