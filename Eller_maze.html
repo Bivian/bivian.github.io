@@ -27,7 +27,16 @@ const coeff=Math.floor(Math.max(3,(Math.min(W,H))/fieldSize));
 
 window.onload = function() {
   canvas = document.getElementById("canvas");
+  //Enabling canvas pixelization
+  canvas.style="image-rendering: optimizeSpeed;image-rendering: -moz-crisp-edges;image-rendering: -webkit-optimize-contrast;image-rendering: -o-crisp-edges;image-rendering: pixelated;-ms-interpolation-mode: nearest-neighbor;";
   ctx = canvas.getContext("2d");
+  //Disabling image smoothing
+  ctx['imageSmoothingEnabled'] = false;       /* standard */
+  ctx['mozImageSmoothingEnabled'] = false;    /* Firefox */
+  ctx['oImageSmoothingEnabled'] = false;      /* Opera */
+  ctx['webkitImageSmoothingEnabled'] = false; /* Safari */
+  ctx['msImageSmoothingEnabled'] = false;     /* IE */
+  
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   ctx.imageSmoothingEnabled=false;
