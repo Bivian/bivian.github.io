@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+<img style="display:none;">
+<div>
+<p>Step 1: upload image</p>
+<input type="file" accept=".png, .jpg, .jpeg"></input>
+<div>
+<div>
+<p>Step 2: choose latitude (0 means identical)</p>
+<input id="range" type="range" min="0" max="64" value="32"><label id="latlabel" for="range">32/64</label>
+<div>
+<div>
+<p>Step 3: click at background</p>
+<div>
+<button id="undo">↩️</button>
+<label id="bufflabel">0/0</label>
+<button id="redo">↪️</button>
+<br>
+<button id="highlight">Highlight transparency</button>
+</div>
+<canvas width="0" height="0">Browser not supported</canvas>
+<div>
+<div>
+<p>Step 4: <a id="download" download="removebg">Download result<a></p>
+<div>
+<script>
+let img=document.querySelector("img[style*=\"display:none\"]");
+let fp=document.querySelector("input[type=\"file\"]");
+let sb=document.querySelector("input[type=\"range\"]");
+let latlabel=document.querySelector("label#latlabel");
+let canvas=document.querySelector("canvas");
+let ctx=canvas.getContext("2d");
+let undobutton=document.querySelector("button#undo");
+let bufflabel=document.querySelector("label#bufflabel");
+let redobutton=document.querySelector("button#redo");
+let curactptr=0;
+let highlight=document.querySelector("button#highlight");
+let download=document.querySelector("a#download");
+
+let buffer=[];
+
+fp.onchange=function(e){
+  if(FileReader&&e.target.files&&e.target.files.length){
+    let reader=new FileReader();
+    reader.onload=function(re){
+      img.src=re.target.result;
+    }
+    reader.readAsDataURL(e.target.files[0]);
+  }else{
+    alert("Not working :(");
+  }
+}
+
+img.onload=function(e){
+  canvas.width=e.target.width;
+  canvas.height=e.target.height;
+  ctx.drawImage(img,0,0);
+  buffer=[];
+  curactptr=1;
+  buffer.push(ctx.getImageData(0,0,img.width,img.height));
+  bufflabel.innerText=curactptr+"/"+buffer.length;
+  download.setAttribute("href", canvas.toDataURL("image/png"));
+}
+
+sb.oninput=function(e){
+  latlabel.innerText=sb.value+"/64";
+}
+
+undobutton.onclick=function(e){
+  if(buffer.length>1&&curactptr>1){
+    ctx.putImageData(buffer[curactptr-2],0,0);
+    curactptr--;
+  }
+  bufflabel.innerText=curactptr+"/"+buffer.length;
+  download.setAttribute("href", canvas.toDataURL("image/png"));
+}
+
+redobutton.onclick=function(e){
+  if(curactptr<buffer.length){
+    ctx.putImageData(buffer[curactptr],0,0);
+    curactptr++;
+  }
+  bufflabel.innerText=curactptr+"/"+buffer.length;
+  download.setAttribute("href", canvas.toDataURL("image/png"));
+}
+
+canvas.onclick=function(e){
+  let data=ctx.getImageData(e.layerX, e.layerY, 1, 1).data;
+  if(!(data[0]==0&&data[1]==0&&data[2]==0&&data[3]==0)){
+    eraseColor(data[0],data[1],data[2],parseInt(sb.value));
+    if(curactptr<buffer.length){
+      buffer.splice(curactptr,buffer.length-curactptr);
+    }
+    buffer.push(ctx.getImageData(0,0,img.width, img.height));
+    curactptr=buffer.length;
+    bufflabel.innerText=curactptr+"/"+buffer.length;
+    download.setAttribute("href", canvas.toDataURL("image/png"));
+  }
+}
+
+highlight.onclick=function(e){
+  if(canvas.style.backgroundColor==""){
+    canvas.style.backgroundColor="lime";
+  }else if(canvas.style.backgroundColor=="lime"){
+    canvas.style.backgroundColor="black";
+  }else if(canvas.style.backgroundColor=="black"){
+	canvas.style.backgroundColor="";
+  }
+}
+
+function eraseColor(r,g,b,offset){
+try{
+  let imgdata=ctx.getImageData(0,0,img.width,img.height);
+  for(let i=0;i<imgdata.data.length;i+=4){
+    if(r>=imgdata.data[i]-offset&&r<=imgdata.data[i]+offset&&
+    g>=imgdata.data[i+1]-offset&&g<=imgdata.data[i+1]+offset&&
+    b>=imgdata.data[i+2]-offset&&b<=imgdata.data[i+2]+offset){
+      imgdata.data[i]=0;
+      imgdata.data[i+1]=0;
+      imgdata.data[i+2]=0;
+      imgdata.data[i+3]=0;
+    }
+  }
+  ctx.putImageData(imgdata, 0, 0);
+}catch(e){alert(e);}
+}
+</script>
+</body>
+</html>
